@@ -5,7 +5,16 @@ generator client {
   provider = "prisma-client-js"
 }
 
+// Adicionar fonte de banco de dados
 datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
 }
+
+// MODELOS DAS TABELAS
+
+// model User{
+//   cpf
+//   email
+//   nome 
+// }
