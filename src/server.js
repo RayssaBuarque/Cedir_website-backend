@@ -1,9 +1,13 @@
 const express = require("express")
 const cors = require("cors");
+
+const { createUser } = require('./crud-routes/crud'); //será necessário colocar cada um dos itens aqui
 const app = express();
 
 app.use(express.json())
 app.use(cors());
+
+app.use(createUser); //será necessário colocar cada um dos itens aqui
 
 // checar se o servidor está funcionando
 app.get("/health13122005", (req,res) => {

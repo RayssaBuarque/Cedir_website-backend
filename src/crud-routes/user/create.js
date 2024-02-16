@@ -1,6 +1,6 @@
 const express = require("express");
 
-const create = express.Router();
+const createUser = express.Router();
 const {PrismaClient} = require('@prisma/client');
 
 const prisma = new PrismaClient();
@@ -8,7 +8,7 @@ const prisma = new PrismaClient();
 /*
     Create route for user table
 */
-create.post('/user', async (req, res) => {
+createUser.post('/user', async (req, res) => {
     const {nome, cpf, email} = req.body; 
 
     const user = await prisma.user.create({
@@ -22,4 +22,4 @@ create.post('/user', async (req, res) => {
 });
 
 
-module.exports = create;
+module.exports = createUser;
