@@ -2,7 +2,8 @@ const express = require("express")
 const cors = require("cors");
 
 // const { createUser } = require('./crud-routes/crud'); //será necessário colocar cada um dos itens aqui
-const {createUser} = require("./crud-routes/user/create/CreateUser")
+const {createUser} = require("./crud-routes/user/create/createUser")
+
 const app = express();
 
 app.use(express.json())
