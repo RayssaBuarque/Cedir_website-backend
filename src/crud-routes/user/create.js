@@ -1,9 +1,9 @@
 const express = require("express");
 
-const createUser = express.Router();
+const createUser = express.Router(); // roteador crud
 const {PrismaClient} = require('@prisma/client');
 
-const prisma = new PrismaClient();
+const prisma = new PrismaClient(); // função responsável por envios e recebimentos do banco
 
 /*
     Create route for user table
