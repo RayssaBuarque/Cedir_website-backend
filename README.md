@@ -7,3 +7,13 @@ Desenvolvido por [Klayvem Guimarães](https://github.com/KlayvemGuimaraes) e [Ra
 ## NOTAS:
 
 Remover o healthCheck após o desenvolvimento
+
+# Comando pra criar migrate
+npx prisma migrate dev
+
+
+# Comando pra rodar o servidor
+npm run dev
+
+# Rodar a base de dados na web
+npx prisma studio
