@@ -8,8 +8,8 @@ const prisma = new PrismaClient(); // função responsável por envios e recebim
 /*
     Create route for user table
 */
-createUser.post("/userPF", async (req, res) => {
-    const {nomeUser, cpfUser, emailUser} = req.body; 
+createUser.post("/userPF", async (request, response) => {
+    const {nomeUser, cpfUser, emailUser} = request.body; 
 
     const user = await prisma.user.create({
         data:{
@@ -18,12 +18,7 @@ createUser.post("/userPF", async (req, res) => {
             emailUser,
         },
     });
-    return res.status(201).json(user);
-
-    // } catch (error) {
-    //     console.error("Erro ao criar usuário:", error);
-    //     return res.status(500).json({ error: "Erro interno ao criar usuário" });
-    // }
+    return response.status(201).json(user);
 });
 
 
