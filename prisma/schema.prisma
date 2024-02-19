@@ -3,13 +3,13 @@
 
 generator client {
   provider = "prisma-client-js"
+  // output   = "./generated/client"
   // previewFeatures = ["driverAdapters"]
 }
 
-// Adicionar fonte de banco de dados
 datasource db {
   provider = "postgresql"
-  url      = "postgresql://postgres:admin@localhost:5432/cedir"
+  url      = "postgresql://postgres:admin@localhost:5432/db"
 }
 
 // MODELOS DAS TABELAS
