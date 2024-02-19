@@ -21,5 +21,9 @@ createUser.post("/userPF", async (request, response) => {
     return response.status(201).json(user);
 });
 
+createUser.get("/userPF", async (req, res) => {
+    const users =  await prisma.user.findMany()
+    return res.status(201).json(users)
+});
 
 module.exports = createUser;

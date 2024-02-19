@@ -1,5 +1,5 @@
-const { createUser } = require('./user/crudUser');
+const createUser = require('./user/crudUser');
 // Conforme criarmos outras tabelas e Routes, importaremos aqui
 
 
-module.exports = { createUser };
+module.exports = createUser;
