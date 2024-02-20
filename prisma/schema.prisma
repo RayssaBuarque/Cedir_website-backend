@@ -9,7 +9,7 @@ generator client {
 
 datasource db {
   provider = "postgresql"
-  url      = "postgresql://postgres:admin@localhost:5432/db"
+  url      = "postgresql://postgres:admin@localhost:5432/db?connection_limit=5"
 }
 
 // MODELOS DAS TABELAS

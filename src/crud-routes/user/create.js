@@ -1,7 +1,7 @@
 const express = require("express");
 
 const createUser = express.Router(); // roteador crud
-const {PrismaClient} = require('@prisma/client');
+const { PrismaClient } = require('@prisma/client');
 
 const prisma = new PrismaClient(); // função responsável por envios e recebimentos do banco
 
@@ -11,14 +11,16 @@ const prisma = new PrismaClient(); // função responsável por envios e recebim
 createUser.post("/userPF", async (request, response) => {
     const {nomeUser, cpfUser, emailUser} = request.body; 
 
-    const user = await prisma.user.create({
-        data:{
-            nomeUser,
-            cpfUser,
-            emailUser,
-        },
-    });
-    return response.status(201).json(user);
+    try{
+        const user = await prisma.user.create({
+            data:{
+                nomeUser,
+                cpfUser,
+                emailUser,
+            },
+        });
+        return response.status(201).json(user);
+    }catch(error){ console.error(error) }
 });
 
 // createUser.get("/userPF", async (req, res) => {
