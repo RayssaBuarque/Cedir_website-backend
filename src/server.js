@@ -14,5 +14,4 @@ app.get("/health13122005", (req,res) => {
     return res.json("server is up and runnin'");
 });
 
-
 app.listen(3333, () => console.log('Server is up in 3333'))
