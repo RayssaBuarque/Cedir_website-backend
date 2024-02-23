@@ -28,6 +28,9 @@ async function createUserPJ(nomeUser, nomeEmpresa, cpfUser, cnpjEmpresa, emailUs
 
         if(!!checagem){
             return({mensagem: "Usuário já cadastrado"})
+        // }else if(){ 
+            // CONDIÇÃO DA API DO CNPJ
+        
         }else{
             const user = await prisma.user.create({
                 data:{
@@ -48,6 +51,8 @@ async function createUserPF(nomeUser, cpfUser, emailUser){
 
         if(!!checagem){
             return({mensagem: "Usuário já cadastrado"})
+        // }else if(){ 
+            // CONDIÇÃO DA API DO CPF
         }else{
             const user = await prisma.user.create({
                 data:{
