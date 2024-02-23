@@ -1,3 +1,4 @@
 const createUser = require('./create');
+const readUser = require('./read');
 
-module.exports = createUser;
+module.exports = {createUser, readUser};
