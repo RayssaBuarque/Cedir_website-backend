@@ -8,24 +8,37 @@ const prisma = new PrismaClient(); // função responsável por envios e recebim
 /*
     Create route for user table
 */
-createUser.post("/userPF", async (request, response) => {
-    const {nomeUser, cpfUser, emailUser} = request.body; 
+createUser.post("/user", async (request, response) => {
+    if('cnpjEmpresa' in request.body){ // Cadastro de Pessoa Jurídica
+        const {nomeUser, nomeEmpresa, cpfUser, cnpjEmpresa, emailUser} = request.body; 
 
-    try{
-        const user = await prisma.user.create({
-            data:{
-                nomeUser,
-                cpfUser,
-                emailUser,
-            },
-        });
-        return response.status(201).json(user);
-    }catch(error){ console.error(error) }
+        try{ 
+            const user = await prisma.user.create({
+                data:{
+                    nomeUser,
+                    nomeEmpresa,
+                    cpfUser,
+                    cnpjEmpresa,
+                    emailUser,
+                },
+            });
+            return response.status(201).json(user);
+        }catch(error){ console.error(error) }
+
+    }else{ // cadastro de Pessoa Física
+        const {nomeUser, cpfUser, emailUser} = request.body; 
+
+        try{
+            const user = await prisma.user.create({
+                data:{
+                    nomeUser,
+                    cpfUser,
+                    emailUser,
+                },
+            });
+            return response.status(201).json(user);
+        }catch(error){ console.error(error) }
+    }
 });
-
-// createUser.get("/userPF", async (req, res) => {
-//     const users =  await prisma.user.findMany()
-//     return res.status(201).json(users)
-// });
 
 module.exports = createUser;
