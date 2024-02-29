@@ -26,7 +26,9 @@ async function createUserPJ(nomeUser, nomeEmpresa, cpfUser, cnpjEmpresa, emailUs
     try{ 
         const checagem = await checarExistencia(cpfUser, emailUser);
 
-        if(!!checagem){
+        if(campos.some(item => item === "")){
+            return({mensagem: "Preencha todos os campos"})
+        }else if(!!checagem){
             return({mensagem: "Usuário já cadastrado"})
         // }else if(){ 
             // CONDIÇÃO DA API DO CNPJ
@@ -47,9 +49,12 @@ async function createUserPJ(nomeUser, nomeEmpresa, cpfUser, cnpjEmpresa, emailUs
 }
 async function createUserPF(nomeUser, cpfUser, emailUser){
     try{
+        const campos = [nomeUser, cpfUser, emailUser]
         const checagem = await checarExistencia(cpfUser, emailUser);
 
-        if(!!checagem){
+        if(campos.some(item => item === "")){
+            return({mensagem: "Preencha todos os campos"})
+        }else if(!!checagem){
             return({mensagem: "Usuário já cadastrado"})
         // }else if(){ 
             // CONDIÇÃO DA API DO CPF
