@@ -5,6 +5,7 @@ const createUser = express.Router();
 const { PrismaClient } = require('@prisma/client');
 const prisma = new PrismaClient();
 
+// INÍCIO DAS CHECAGENS 
 
 async function checarExistencia(cpfUser, emailUser){
     try{
@@ -21,6 +22,52 @@ async function checarExistencia(cpfUser, emailUser){
         
         return existencia;
     }catch(error){console.log(error)}
+}
+async function checarCnpj(cnpjEmpresa){
+    const validaNumerosRepetidosCNPJ = (cnpj) => { // Verifica se o CNPJ possui uma sequência de dígitos repetidos.
+        const numerosRepetidos = [
+          '00000000000000',
+          '11111111111111',
+          '22222222222222',
+          '33333333333333',
+          '44444444444444',
+          '55555555555555',
+          '66666666666666',
+          '77777777777777',
+          '88888888888888',
+          '99999999999999'
+        ];
+    
+        return numerosRepetidos.includes(cnpj); 
+      };
+      const validaDigitosVerificadoresCNPJ = (cnpj) => { // Calcula e verifica se os dígitos verificadores do CNPJ são válidos.
+        const calculaDigito = (cnpj, posicao) => {
+          let soma = 0;
+          let multiplicador = posicao === 12 ? 2 : 9;
+    
+          for (let i = 0; i < posicao; i++) {
+            soma += parseInt(cnpj[i]) * multiplicador;
+            multiplicador--;
+    
+            if (multiplicador === 1) {
+              multiplicador = 9;
+            }
+          }
+    
+          const resultado = soma % 11;
+          return resultado < 2 ? 0 : 11 - resultado;
+        };
+    
+        const digito1 = calculaDigito(cnpj, 12);
+        const digito2 = calculaDigito(cnpj, 13);
+    
+        return parseInt(cnpj[12]) === digito1 && parseInt(cnpj[13]) === digito2;
+      };
+      if (!validaNumerosRepetidosCNPJ(cnpjEmpresa) && validaDigitosVerificadoresCNPJ(cnpjEmpresa)) { // Se todas retornarem verdadeiro, imprime "CNPJ válido"; caso contrário, imprime "CNPJ inválido".
+        return false
+      } else {
+        return true
+      }
 }
 async function checarCpf(cpfUser){
     const validaPrimeiroDigito = (cpf) => { // Calcula e verifica se o primeiro dígito verificador do CPF é válido.
@@ -81,17 +128,24 @@ async function checarCpf(cpfUser){
         return false
       }
 }
+
+// FIM DAS CHECAGENS
+
 async function createUserPJ(nomeUser, nomeEmpresa, cpfUser, cnpjEmpresa, emailUser) {
     try{ 
-        const checagem = await checarExistencia(cpfUser, emailUser);
+        const campos = [nomeUser, cpfUser, emailUser, cnpjEmpresa, nomeEmpresa]
+        const checagemUser = await checarExistencia(cpfUser, emailUser);
+        const checagemCpnj = await checarCnpj(cnpjEmpresa);
+        const checagemCpf = await checarCpf(cpfUser);
 
         if(campos.some(item => item === "")){
-            return({mensagem: "Preencha todos os campos"})
-        }else if(!!checagem){
-            return({mensagem: "Usuário já cadastrado"})
-        // }else if(){ 
-            // CONDIÇÃO DA API DO CNPJ
-        
+            return({mensagem: "Preencha todos os campos"});
+        }else if(!!checagemUser){
+            return({mensagem: "Usuário já cadastrado"});
+        }else if(!!checagemCpf){ 
+            return({mensagem: "CPF inválido"})
+        }else if(!!checagemCpnj){ 
+            return({mensagem: "CNPJ inválido"})
         }else{
             const user = await prisma.user.create({
                 data:{
@@ -108,6 +162,7 @@ async function createUserPJ(nomeUser, nomeEmpresa, cpfUser, cnpjEmpresa, emailUs
 }
 async function createUserPF(nomeUser, cpfUser, emailUser){
     try{
+        // CONEXÃO DAS CHECAGENS
         const campos = [nomeUser, cpfUser, emailUser]
         const checagemUsuario = await checarExistencia(cpfUser, emailUser);
         const checagemCpf = await checarCpf(cpfUser);
