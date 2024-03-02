@@ -45,7 +45,7 @@ async function checarCnpj(cnpjEmpresa){
         ];
     
         return numerosRepetidos.includes(cnpj); 
-      };
+      };   
       const validaDigitosVerificadoresCNPJ = (cnpj) => { // Calcula e verifica se os dígitos verificadores do CNPJ são válidos.
         const calculaDigito = (cnpj, posicao) => {
           let soma = 0;
@@ -153,8 +153,8 @@ async function createUserPJ(nomeUser, nomeEmpresa, cpfUser, cnpjEmpresa, emailUs
             return({mensagem: "Email inválido"});
         }else if(!!checagemCpf){ 
             return({mensagem: "CPF inválido"})
-        // }else if(!!checagemCpnj){ 
-        //     return({mensagem: "CNPJ inválido"})
+        }else if(!!checagemCpnj){ 
+            return({mensagem: "CNPJ inválido"})
         }else{
             const user = await prisma.user.create({
                 data:{
