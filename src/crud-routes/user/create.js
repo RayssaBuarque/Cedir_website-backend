@@ -32,58 +32,50 @@ async function checarEmail(emailUser){
 }   
 
 async function checarCnpj(cnpjEmpresa) {
-    // Remove caracteres não numéricos
-    const cnpjNumerico = cnpjEmpresa.replace(/[^\d]/g, '');
-    console.log(cnpjEmpresa)
+    // Remover caracteres não numéricos
+    const cnpj = cnpjEmpresa.replace(/[^\d]/g, '');
+    
+    if (cnpj.length !== 14) {
+        return false;
+    }
 
-    const validaNumerosRepetidosCNPJ = (cnpj) => {
-        const numerosRepetidos = [
-            '00000000000000',
-            '11111111111111',
-            '22222222222222',
-            '33333333333333',
-            '44444444444444',
-            '55555555555555',
-            '66666666666666',
-            '77777777777777',
-            '88888888888888',
-            '99999999999999'
-        ];
+    // Verificar se todos os dígitos são iguais (situação inválida)
+    if (/^(\d)\1+$/.test(cnpj)) {
+        return false;
+    }
 
-        return numerosRepetidos.includes(cnpj);
-    };
+    // Calcular o primeiro dígito verificador
+    let soma = 0;
+    for (let i = 0; i < 12; i++) {
+        soma += parseInt(cnpj.charAt(i)) * (13 - i);
+    }
+    let resto = (soma % 11);
+    let digitoVerificador1 = resto < 2 ? 0 : 11 - resto;
 
-    const validaDigitosVerificadoresCNPJ = (cnpj) => {
-        const calculaDigito = (cnpj, posicao) => {
-            let soma = 0;
-            let multiplicador = posicao === 12 ? 2 : 9;
+    // Verificar o primeiro dígito verificador
+    if (parseInt(cnpj.charAt(12)) !== digitoVerificador1) {
+        return false;
+    }
 
-            for (let i = 0; i < posicao; i++) {
-                soma += parseInt(cnpj[i]) * multiplicador;
-                multiplicador--;
+    // Calcular o segundo dígito verificador
+    soma = 0;
+    for (let i = 0; i < 13; i++) {
+        soma += parseInt(cnpj.charAt(i)) * (14 - i);
+    }
+    resto = (soma % 11);
+    let digitoVerificador2 = resto < 2 ? 0 : 11 - resto;
 
-                if (multiplicador === 1) {
-                    multiplicador = 9;
-                }
-            }
+    // Verificar o segundo dígito verificador
+    if (parseInt(cnpj.charAt(13)) !== digitoVerificador2) {
+        return false;
+    }
 
-            const resultado = soma % 11;
-            return resultado < 2 ? 0 : 11 - resultado;
-        };
-
-        const digito1 = calculaDigito(cnpj, 12);
-        const digito2 = calculaDigito(cnpj, 13);
-
-        return parseInt(cnpj[12]) === digito1 && parseInt(cnpj[13]) === digito2;
-    };
-
-    // Se não possui números repetidos e os dígitos verificadores são válidos, o CNPJ é considerado válido
-    return !validaNumerosRepetidosCNPJ(cnpjNumerico) && validaDigitosVerificadoresCNPJ(cnpjNumerico);
+    // Se todas as verificações passaram, o CNPJ é válido
+    return true;
 }
 
 async function checarCpf(cpfUser){
     const cpfNumerico = cpfUser.replace(/[^\d]/g, ''); // Remove todos os caracteres não numéricos
-
     const validaPrimeiroDigito = (cpf) => { // Calcula e verifica se o primeiro dígito verificador do CPF é válido.
         let soma = 0;
         let multiplicador = 10;
@@ -149,7 +141,7 @@ async function createUserPJ(nomeUser, nomeEmpresa, cpfUser, cnpjEmpresa, emailUs
     try{ 
         const campos = [nomeUser, cpfUser, emailUser, cnpjEmpresa, nomeEmpresa]
         const checagemUser = await checarExistencia(cpfUser, emailUser);
-        const checagemCpnj = await checarCnpj(cnpjEmpresa);
+        const checagemCnpj = await checarCnpj(cnpjEmpresa);
         const checagemCpf = await checarCpf(cpfUser);
         const checagemEmail = await checarEmail(emailUser);
 
@@ -157,12 +149,12 @@ async function createUserPJ(nomeUser, nomeEmpresa, cpfUser, cnpjEmpresa, emailUs
             return({mensagem: "Preencha todos os campos"});
         }else if(!!checagemUser){
             return({mensagem: "Usuário já cadastrado"});
+        }else if(!!checagemCnpj){ 
+            return({mensagem: "CNPJ inválido"})
         }else if(!checagemEmail){
             return({mensagem: "Email inválido"});
         }else if(!!checagemCpf){ 
             return({mensagem: "CPF inválido"})
-        }else if(!!checagemCpnj){ 
-            return({mensagem: "CNPJ inválido"})
         }else{
             const user = await prisma.user.create({
                 data:{
