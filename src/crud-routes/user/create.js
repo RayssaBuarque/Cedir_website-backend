@@ -23,6 +23,12 @@ async function checarExistencia(cpfUser, emailUser){
         return existencia;
     }catch(error){console.log(error)}
 }
+async function checarEmail(emailUser){
+  // Expressão regular para validar o formato do e-mail
+  const regexEmail = /^[a-zA-Z0-9._-]{1,25}@[a-zA-Z0-9-]{1,14}\.[a-zA-Z0-9.]{2,}$/;
+  return regexEmail.test(emailUser);
+
+}
 async function checarCnpj(cnpjEmpresa){
     const validaNumerosRepetidosCNPJ = (cnpj) => { // Verifica se o CNPJ possui uma sequência de dígitos repetidos.
         const numerosRepetidos = [
@@ -137,15 +143,18 @@ async function createUserPJ(nomeUser, nomeEmpresa, cpfUser, cnpjEmpresa, emailUs
         const checagemUser = await checarExistencia(cpfUser, emailUser);
         const checagemCpnj = await checarCnpj(cnpjEmpresa);
         const checagemCpf = await checarCpf(cpfUser);
+        const checagemEmail = await checarEmail(emailUser);
 
         if(campos.some(item => item === "")){
             return({mensagem: "Preencha todos os campos"});
         }else if(!!checagemUser){
             return({mensagem: "Usuário já cadastrado"});
+        }else if(!checagemEmail){
+            return({mensagem: "Email inválido"});
         }else if(!!checagemCpf){ 
             return({mensagem: "CPF inválido"})
-        }else if(!!checagemCpnj){ 
-            return({mensagem: "CNPJ inválido"})
+        // }else if(!!checagemCpnj){ 
+        //     return({mensagem: "CNPJ inválido"})
         }else{
             const user = await prisma.user.create({
                 data:{
@@ -171,6 +180,8 @@ async function createUserPF(nomeUser, cpfUser, emailUser){
             return({mensagem: "Preencha todos os campos"})
         }else if(!!checagemUsuario){
             return({mensagem: "Usuário já cadastrado"})
+        }else if(!!checagemEmail){
+            return({mensagem: "Email inválido"});
         }else if(!!checagemCpf){ 
             return({mensagem: "CPF inválido"})
         }else{
