@@ -174,17 +174,11 @@ async function createUserPF(nomeUser, cpfUser, emailUser){
         // CONEXÃO DAS CHECAGENS
         const campos = [nomeUser, cpfUser, emailUser]
         const checagemUsuario = await checarExistencia(cpfUser, emailUser);
-        const checagemCpf = await checarCpf(cpfUser);
-        const checagemEmail = await checarEmail(emailUser);
 
         if(campos.some(item => item === "")){
             return({mensagem: "Preencha todos os campos"})
         }else if(!!checagemUsuario){
             return({mensagem: "Usuário já cadastrado"})
-        }else if(!!checagemEmail){
-            return({mensagem: "Email inválido"});
-        }else if(!!checagemCpf){ 
-            return({mensagem: "CPF inválido"})
         }else{
             const user = await prisma.user.create({
                 data:{
