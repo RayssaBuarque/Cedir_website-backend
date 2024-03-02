@@ -175,6 +175,7 @@ async function createUserPF(nomeUser, cpfUser, emailUser){
         const campos = [nomeUser, cpfUser, emailUser]
         const checagemUsuario = await checarExistencia(cpfUser, emailUser);
         const checagemCpf = await checarCpf(cpfUser);
+        const checagemEmail = await checarEmail(emailUser);
 
         if(campos.some(item => item === "")){
             return({mensagem: "Preencha todos os campos"})
