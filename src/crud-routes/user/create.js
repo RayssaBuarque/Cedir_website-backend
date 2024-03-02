@@ -32,46 +32,60 @@ async function checarEmail(emailUser){
 }   
 
 async function checarCnpj(cnpjEmpresa) {
-    // Remover caracteres não numéricos
-    const cnpj = cnpjEmpresa.replace(/[^\d]/g, '');
-    
-    if (cnpj.length !== 14) {
+    const cnpjNumerico = cnpjEmpresa.replace(/[^\d]/g, '');
+
+    const validaPrimeiroDigito = (cnpj) => {
+        let soma = 0;
+        let multiplicador = 5;
+
+        for (let tamanho = 0; tamanho < 12; tamanho++) {
+            soma += parseInt(cnpj[tamanho]) * multiplicador;
+            multiplicador = multiplicador === 2 ? 9 : multiplicador - 1;
+        }
+
+        const resto = soma % 11;
+        const digitoVerificador = resto < 2 ? 0 : 11 - resto;
+
+        return digitoVerificador !== parseInt(cnpj[12]);
+    };
+
+    const validaSegundoDigito = (cnpj) => {
+        let soma = 0;
+        let multiplicador = 6;
+
+        for (let tamanho = 0; tamanho < 13; tamanho++) {
+            soma += parseInt(cnpj[tamanho]) * multiplicador;
+            multiplicador = multiplicador === 2 ? 9 : multiplicador - 1;
+        }
+
+        const resto = soma % 11;
+        const digitoVerificador = resto < 2 ? 0 : 11 - resto;
+
+        return digitoVerificador !== parseInt(cnpj[13]);
+    };
+
+    const validaNumerosRepetidos = (cnpj) => {
+        const numerosRepetidos = [
+            '00000000000000',
+            '11111111111111',
+            '22222222222222',
+            '33333333333333',
+            '44444444444444',
+            '55555555555555',
+            '66666666666666',
+            '77777777777777',
+            '88888888888888',
+            '99999999999999',
+        ];
+
+        return numerosRepetidos.includes(cnpj);
+    };
+
+    if (validaNumerosRepetidos(cnpjNumerico) || validaPrimeiroDigito(cnpjNumerico) || validaSegundoDigito(cnpjNumerico)) {
+        return true;
+    } else {
         return false;
     }
-
-    // Verificar se todos os dígitos são iguais (situação inválida)
-    if (/^(\d)\1+$/.test(cnpj)) {
-        return false;
-    }
-
-    // Calcular o primeiro dígito verificador
-    let soma = 0;
-    for (let i = 0; i < 12; i++) {
-        soma += parseInt(cnpj.charAt(i)) * (13 - i);
-    }
-    let resto = (soma % 11);
-    let digitoVerificador1 = resto < 2 ? 0 : 11 - resto;
-
-    // Verificar o primeiro dígito verificador
-    if (parseInt(cnpj.charAt(12)) !== digitoVerificador1) {
-        return false;
-    }
-
-    // Calcular o segundo dígito verificador
-    soma = 0;
-    for (let i = 0; i < 13; i++) {
-        soma += parseInt(cnpj.charAt(i)) * (14 - i);
-    }
-    resto = (soma % 11);
-    let digitoVerificador2 = resto < 2 ? 0 : 11 - resto;
-
-    // Verificar o segundo dígito verificador
-    if (parseInt(cnpj.charAt(13)) !== digitoVerificador2) {
-        return false;
-    }
-
-    // Se todas as verificações passaram, o CNPJ é válido
-    return true;
 }
 
 async function checarCpf(cpfUser){
