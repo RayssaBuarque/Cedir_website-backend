@@ -23,59 +23,67 @@ async function checarExistencia(cpfUser, emailUser){
         return existencia;
     }catch(error){console.log(error)}
 }
+
 async function checarEmail(emailUser){
   // Expressão regular para validar o formato do e-mail
   const regexEmail = /^[a-zA-Z0-9._-]{1,25}@[a-zA-Z0-9-]{1,14}\.[a-zA-Z0-9.]{2,}$/;
   return regexEmail.test(emailUser);
 
-}
-async function checarCnpj(cnpjEmpresa){
-    const validaNumerosRepetidosCNPJ = (cnpj) => { // Verifica se o CNPJ possui uma sequência de dígitos repetidos.
+}   
+
+async function checarCnpj(cnpjEmpresa) {
+    // Remove caracteres não numéricos
+    const cnpjNumerico = cnpjEmpresa.replace(/[^\d]/g, '');
+    console.log(cnpjEmpresa)
+
+    const validaNumerosRepetidosCNPJ = (cnpj) => {
         const numerosRepetidos = [
-          '00000000000000',
-          '11111111111111',
-          '22222222222222',
-          '33333333333333',
-          '44444444444444',
-          '55555555555555',
-          '66666666666666',
-          '77777777777777',
-          '88888888888888',
-          '99999999999999'
+            '00000000000000',
+            '11111111111111',
+            '22222222222222',
+            '33333333333333',
+            '44444444444444',
+            '55555555555555',
+            '66666666666666',
+            '77777777777777',
+            '88888888888888',
+            '99999999999999'
         ];
-    
-        return numerosRepetidos.includes(cnpj); 
-      };   
-      const validaDigitosVerificadoresCNPJ = (cnpj) => { // Calcula e verifica se os dígitos verificadores do CNPJ são válidos.
+
+        return numerosRepetidos.includes(cnpj);
+    };
+
+    const validaDigitosVerificadoresCNPJ = (cnpj) => {
         const calculaDigito = (cnpj, posicao) => {
-          let soma = 0;
-          let multiplicador = posicao === 12 ? 2 : 9;
-    
-          for (let i = 0; i < posicao; i++) {
-            soma += parseInt(cnpj[i]) * multiplicador;
-            multiplicador--;
-    
-            if (multiplicador === 1) {
-              multiplicador = 9;
+            let soma = 0;
+            let multiplicador = posicao === 12 ? 2 : 9;
+
+            for (let i = 0; i < posicao; i++) {
+                soma += parseInt(cnpj[i]) * multiplicador;
+                multiplicador--;
+
+                if (multiplicador === 1) {
+                    multiplicador = 9;
+                }
             }
-          }
-    
-          const resultado = soma % 11;
-          return resultado < 2 ? 0 : 11 - resultado;
+
+            const resultado = soma % 11;
+            return resultado < 2 ? 0 : 11 - resultado;
         };
-    
+
         const digito1 = calculaDigito(cnpj, 12);
         const digito2 = calculaDigito(cnpj, 13);
-    
+
         return parseInt(cnpj[12]) === digito1 && parseInt(cnpj[13]) === digito2;
-      };
-      if (!validaNumerosRepetidosCNPJ(cnpjEmpresa) && validaDigitosVerificadoresCNPJ(cnpjEmpresa)) { // Se todas retornarem verdadeiro, imprime "CNPJ válido"; caso contrário, imprime "CNPJ inválido".
-        return false
-      } else {
-        return true
-      }
+    };
+
+    // Se não possui números repetidos e os dígitos verificadores são válidos, o CNPJ é considerado válido
+    return !validaNumerosRepetidosCNPJ(cnpjNumerico) && validaDigitosVerificadoresCNPJ(cnpjNumerico);
 }
+
 async function checarCpf(cpfUser){
+    const cpfNumerico = cpfUser.replace(/[^\d]/g, ''); // Remove todos os caracteres não numéricos
+
     const validaPrimeiroDigito = (cpf) => { // Calcula e verifica se o primeiro dígito verificador do CPF é válido.
         let soma = 0;
         let multiplicador = 10;
@@ -128,7 +136,7 @@ async function checarCpf(cpfUser){
         //includes = verifica se em (cpf), há algum cpf presente em numerosRepetidos 
       };
 
-      if (validaNumerosRepetidos(cpfUser) || validaPrimeiroDigito(cpfUser) || validaSegundoDigito(cpfUser)) { // || =  retorna verdadeiro caso ambos os operandos sejam verdadeiro, e se for falso, retorna falso.
+      if (validaNumerosRepetidos(cpfNumerico) || validaPrimeiroDigito(cpfNumerico) || validaSegundoDigito(cpfNumerico)) { // || =  retorna verdadeiro caso ambos os operandos sejam verdadeiro, e se for falso, retorna falso.
         return true
       } else {
         return false
