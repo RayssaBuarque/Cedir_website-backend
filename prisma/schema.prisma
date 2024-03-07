@@ -21,20 +21,8 @@ model User {
   emailUser    String   @db.VarChar(40) @unique
   cpfUser      String   @db.Char(11) @unique
   cnpjEmpresa  String?  @db.Char(14) @unique
+  departamento String?  @db.Char(40) @unique
 
   @@map("User")
   // @@unique(["cpfUser", "cnpjEmpresa", "emailUser"], name: "unique_constraint")
 }
-
-// model User{
-//   idUser Int @id @default(autoincrement())
-
-//   nomeUser String @db.VarChar(120)
-//   nomeEmpresa String? @db.VarChar(120)
-//   emailUser String @db.VarChar(40) @unique
-  
-//   cpfUser String @db.Char(11) @unique
-//   cnpjEmpresa String? @db.Char(14) @unique
-
-//   // O ? significa que tal atributo pode ser nulo
-// }
