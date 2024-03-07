@@ -23,6 +23,16 @@ model User {
   cnpjEmpresa  String?  @db.Char(14) @unique
   departamento String?  @db.Char(40) @unique
 
+  Password      Password[]
+
   @@map("User")
   // @@unique(["cpfUser", "cnpjEmpresa", "emailUser"], name: "unique_constraint")
+}
+
+model Password {
+  emailUser    String   @db.VarChar(40) @id
+  senha        String   @db.VarChar(40)
+  user         User     @relation(fields: [emailUser], references: [emailUser])
+
+  @@map("Password")
 }
