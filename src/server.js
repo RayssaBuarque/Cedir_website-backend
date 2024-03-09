@@ -1,13 +1,15 @@
 const express = require("express")
 const cors = require("cors");
 
-const {createUser, readUser} = require('./crud-routes/crud'); //será necessário colocar cada um dos itens aqui
+const {createUser, readUser, createPassword} = require('./crud-routes/crud'); //será necessário colocar cada um dos itens aqui
 const app = express();
 
 app.use(express.json())
 app.use(cors());
 
-app.use(createUser); //será necessário colocar cada um dos itens aqui
+ //será necessário colocar cada um dos itens aqui
+app.use(createPassword);
+app.use(createUser); 
 app.use(readUser);
 
 // checar se o servidor está funcionando
