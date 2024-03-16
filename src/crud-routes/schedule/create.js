@@ -1,6 +1,6 @@
 const express = require("express");
 
-const createPassword = express.Router();
+const createSchedule = express.Router();
 
 const { PrismaClient } = require('@prisma/client');
 const prisma = new PrismaClient();
@@ -8,20 +8,32 @@ const prisma = new PrismaClient();
 /*
     Create route for password table
 */
-createPassword.post("/password", async (request, response) => {
-    const {emailUser, senha} = request.body; 
+createSchedule.post("/schedule", async (request, response) => {
+    const {dataAgendamento, dataHorario, emailUser, observacoes} = request.body; 
+    
+    const [dia, mes, ano] = dataAgendamento.split('/');
+    const [hours, minutes, seconds] = dataHorario.split(':').map(Number);
+    const isoString = `${ano}-${mes}-${dia}T${hours}:${minutes}:${seconds}Z`;
 
-    const password = await prisma.password.create({
+    const statusAgendamento = "Pendente";
+    const createdAt = new Date();
+    const updatedAt = new Date();
+
+    const schedule = await prisma.schedule.create({
         data:{
-            emailUser,
-            senha,
+            dataAgendamento:isoString,
+            emailUser:emailUser,
+            observacoes:observacoes,
+            statusAgendamento:statusAgendamento,
+            createdAt:createdAt,
+            updatedAt:updatedAt,
         },
-    }).then( (password) => {
-        return response.status(201).json(password)
+
+    }).then( (schedule) => {
+        return response.status(201).json(schedule)
     })
         
     // const password = createUserPJ(emailUser, senha)
-        
 });
 
-module.exports = createPassword;
+module.exports = createSchedule;

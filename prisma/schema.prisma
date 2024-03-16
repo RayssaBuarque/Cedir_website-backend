@@ -41,12 +41,11 @@ model Password {
 model Schedule {
   idAgendamento    Int       @id @default(autoincrement())
   dataAgendamento  DateTime  @map("date")
-  dataHorario      DateTime  @db.Timestamp
   emailUser        String    @db.VarChar(40)
   observacoes      String?   @db.VarChar(100)   
 
   // devs
-  status           String    @db.VarChar(12)
+  statusAgendamento           String    @db.VarChar(12)
   createdAt        DateTime  @default(now())
   updatedAt        DateTime  @updatedAt
   user             User      @relation(fields: [emailUser], references: [emailUser])
