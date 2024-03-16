@@ -24,6 +24,7 @@ model User {
   departamento String?  @db.Char(40) @unique
 
   Password      Password[]
+  Schedule      Schedule[]
 
   @@map("User")
   // @@unique(["cpfUser", "cnpjEmpresa", "emailUser"], name: "unique_constraint")
@@ -35,4 +36,20 @@ model Password {
   user         User     @relation(fields: [emailUser], references: [emailUser])
 
   @@map("Password")
+}
+
+model Schedule {
+  idAgendamento    Int       @id @default(autoincrement())
+  dataAgendamento  DateTime  @map("date")
+  dataHorario      DateTime  @db.Timestamp
+  emailUser        String    @db.VarChar(40)
+  observacoes      String?   @db.VarChar(100)   
+
+  // devs
+  status           String    @db.VarChar(12)
+  createdAt        DateTime  @default(now())
+  updatedAt        DateTime  @updatedAt
+  user             User      @relation(fields: [emailUser], references: [emailUser])
+
+  @@map("Schedule")
 }
