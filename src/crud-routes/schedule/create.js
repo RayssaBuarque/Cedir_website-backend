@@ -10,10 +10,9 @@ const prisma = new PrismaClient();
 */
 createSchedule.post("/schedule", async (request, response) => {
     const {dataAgendamento, dataHorario, emailUser, observacoes} = request.body; 
-    
-    const [dia, mes, ano] = dataAgendamento.split('/');
-    const [hours, minutes, seconds] = dataHorario.split(':').map(Number);
-    const isoString = `${ano}-${mes}-${dia}T${hours}:${minutes}:${seconds}Z`;
+
+    const [hours, minutes] = dataHorario.split(':').map(Number);
+    const isoString = `${dataHorario}T${hours}:${minutes}:00Z`;
 
     const statusAgendamento = "Pendente";
     const createdAt = new Date();
