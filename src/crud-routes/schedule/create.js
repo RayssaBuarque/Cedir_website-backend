@@ -12,7 +12,7 @@ createSchedule.post("/schedule", async (request, response) => {
     const {dataAgendamento, dataHorario, emailUser, observacoes} = request.body; 
 
     const [hours, minutes] = dataHorario.split(':').map(Number);
-    const isoString = `${dataHorario}T${hours}:${minutes}:00Z`;
+    const isoString = `${dataAgendamento}T${hours < 10 ? '0' + hours : hours}:${minutes}:00.000Z`;
 
     const statusAgendamento = "Pendente";
     const createdAt = new Date();
