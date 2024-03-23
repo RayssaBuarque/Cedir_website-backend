@@ -18,7 +18,12 @@ readPassword.get("/password/:emailUser", async (request, response) => {
             }
         }).then((password) => {
             let existencia = (password !== null)
-            return response.status(200).json(existencia);
+
+            let validacaoLogin = {
+                existencia: existencia,
+                email: emailUser
+            }
+            return response.status(200).json(validacaoLogin);
         });
     } catch(error){ console.log(error) }
         
