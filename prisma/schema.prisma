@@ -25,6 +25,7 @@ model User {
 
   Password      Password[]
   Schedule      Schedule[]
+  Equipamento   Equipamento[]
 
   @@map("User")
   // @@unique(["cpfUser", "cnpjEmpresa", "emailUser"], name: "unique_constraint")
@@ -51,4 +52,15 @@ model Schedule {
   user             User      @relation(fields: [emailUser], references: [emailUser])
 
   @@map("Schedule")
+}
+
+model Equipamento {
+  idEquipamento        Int      @id @default(autoincrement())
+  tipo      String   @db.VarChar(40)
+  descricao String   @db.VarChar(100)
+  qtd       Int
+  emailUser String   @db.VarChar(40) 
+  user      User      @relation(fields: [emailUser], references: [emailUser])
+
+  @@map("Equipamento")
 }
