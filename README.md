@@ -17,3 +17,11 @@ npm run dev
 
 # Rodar a base de dados na web
 npx prisma studio
+
+# Klayvem : 
+
+- reformular a forma que os usuários colocam as datas
+
+# Rayssa : 
+
+- eu n lembro oq era (coloca aqui)
