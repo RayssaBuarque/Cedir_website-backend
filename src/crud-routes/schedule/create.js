@@ -9,10 +9,12 @@ const prisma = new PrismaClient();
     Create route for password table
 */
 createSchedule.post("/schedule", async (request, response) => {
-    const {dataAgendamento, dataHorario, emailUser, observacoes} = request.body; 
+    const {dataAgendamento, periodo, emailUser, observacoes} = request.body; 
 
-    const [hours, minutes] = dataHorario.split(':').map(Number);
-    const isoString = `${dataAgendamento}T${hours < 10 ? '0' + hours : hours}:${minutes}:00.000Z`;
+    // const [hours, minutes] = dataHorario.split(':').map(Number);
+    // const isoString = `${dataAgendamento}T${hours < 10 ? '0' + hours : hours}:${minutes}:00.000Z`;
+    // const isoString = `${dataAgendamento}T01:00:00.000Z`;
+    const isoString = `2023-12-12T01:00:00.000Z`;
 
     const statusAgendamento = "Pendente";
     const createdAt = new Date();
@@ -24,6 +26,7 @@ createSchedule.post("/schedule", async (request, response) => {
             emailUser:emailUser,
             observacoes:observacoes,
             statusAgendamento:statusAgendamento,
+            periodo:periodo,
             createdAt:createdAt,
             updatedAt:updatedAt,
         },

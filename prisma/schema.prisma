@@ -43,6 +43,7 @@ model Schedule {
   idAgendamento    Int       @id @default(autoincrement())
   dataAgendamento  DateTime  @map("date")
   emailUser        String    @db.VarChar(40)
+  periodo          String    @db.VarChar(20) @default("Manhã")
   observacoes      String?   @db.VarChar(100)   
 
   // devs
