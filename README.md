@@ -23,5 +23,3 @@ npx prisma studio
 - reformular a forma que os usuários colocam as datas
 
 # Rayssa : 
-
-- eu n lembro oq era (coloca aqui)

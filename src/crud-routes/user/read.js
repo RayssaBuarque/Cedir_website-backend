@@ -12,7 +12,7 @@ readUser.get("/user/:userDocument", async (req,res) => {
     const {userDocument} = req.params;
     
     try{
-        if(userDocument.length == 11){ // Coleta de PESSOA FÍSICA
+        if((userDocument.length == 11) && !(/^\d+$/.test(userDocument))){ // Coleta de PESSOA FÍSICA
             const user = await prisma.user.findFirst({
                 where:{
                     cpfUser : userDocument,
@@ -21,10 +21,19 @@ readUser.get("/user/:userDocument", async (req,res) => {
             return res.status(200).json(user);
         }
 
-        else if(userDocument.length == 14){ // COLETA DE PESSOA JURÍDICA
+        else if((userDocument.length == 14) && !(/^\d+$/.test(userDocument))){ // COLETA DE PESSOA JURÍDICA
             const user = await prisma.user.findFirst({
                 where:{
                     cnpjEmpresa : userDocument,
+                }
+            });
+            return res.status(200).json(user);
+        }
+        
+        else{
+            const user = await prisma.user.findFirst({
+                where:{
+                    emailUser : userDocument,
                 }
             });
             return res.status(200).json(user);
